@@ -33,7 +33,7 @@ class App extends Component {
   componentWillMount () {
     this.judgeScreenSize();
     let page = this.state.randomPage;
-    this.getRandomRoomInfo('api/RoomApi/live?offset=' + page + '&limit=9');
+    this.getRandomRoomInfo('api/RoomApi/live?offset=' + page + '&limit=20');
     window.addEventListener('resize', this.judgeScreenSize);
   }
   
@@ -133,7 +133,7 @@ class App extends Component {
   }
   onPageBottom (e) {
     e.preventDefault();
-    let url = 'api/RoomApi/live?offset=' + this.state.randomPage + '&limit=9'
+    let url = 'api/RoomApi/live?offset=' + this.state.randomPage + '&limit=20'
     this.setState({
       isLoading: true
     })
@@ -148,6 +148,7 @@ class App extends Component {
       this.setState({phoneSize: true});
     }
   }
+
   render() {
     const categoryState = {
       categoryReady : this.state.categoryReady,
@@ -155,14 +156,19 @@ class App extends Component {
       phoneSize: this.state.phoneSize
     }
     const nav = [
-      ["随便看看", "/", null], 
-      ["全部分类", { pathname: "/showCategory", state: categoryState}, this.showCategory], 
-      ["我的关注", "/personalCards", null]
+      ["Homepage", "/", null], 
+      ["Categories", { pathname: "/showCategory", state: categoryState}, this.showCategory], 
+      ["Subscriptions", "/personalCards", null]
     ].map(function (val, idx) {
       return (
-        <NavList key={idx} onClick={val[2]}><NavLink exact activeStyle={{color: "green"}} to={val[1]}>{val[0]}</NavLink></NavList>
+        <NavList key={idx} onClick={val[2]}>
+          <NavLink exact activeStyle={{ color: "green" }} to={val[1]}>
+            {val[0]}
+          </NavLink>
+        </NavList>
       )
-    })
+    });
+
     const RandomRooms = () => ( 
       <div id="random-room">
         <div>
@@ -189,30 +195,31 @@ class App extends Component {
 
     return (
       <Router>
-        <Container id="container">
-          <Header>
-            <Logo>
-              <img src={logo} style={{width: '100%'}} alt="douyulogo" id="header-logo"/>
-            </Logo>
-          </Header>
+        {/* 用一个 div 包裹 Nav 和 Container，解决 Router 的子元素限制 */}
+        <div>
           <Nav id="nav">
+            <Logo>
+              <NavLink exact to="/">
+                <img src={logo} alt="logo" />
+              </NavLink>
+            </Logo>
             {nav}
           </Nav>
-          <div id="view-port">
-            <Switch>
-              <Route exact path="/" component={RandomRooms} />
-              {/* <Loading>加载中。。。</Loading> */}
-              <Route path="/showCategory" component={AllCategory} 
-              />
-              <Route path="/personalCards" component={PersonalCards} />
-            </Switch>
-            <Github>
-              <a href="#">
-                <GithubLogo />
-              </a>
-            </Github>
-          </div>
-        </Container>
+          <Container id="container">
+            <div id="view-port">
+              <Switch>
+                <Route exact path="/" component={RandomRooms} />
+                <Route path="/showCategory" component={AllCategory} />
+                <Route path="/personalCards" component={PersonalCards} />
+              </Switch>
+              <Github>
+                <a href="#">
+                  <GithubLogo />
+                </a>
+              </Github>
+            </div>
+          </Container>
+        </div>
       </Router>
     );
   }
@@ -222,10 +229,10 @@ const Container = styled.div`
   font-size: 14px;
   margin: 1rem auto;
   font-family: sans-serif;
-  min-width: 840px;
+  min-width: 0;
   transition: width 1.5s;
-  width: 75%;
-  max-width: 2000px;
+  width: 90%;
+  max-width: none;
   @media screen and (max-width: 1000px) {
     width: 85%;
   }
@@ -239,19 +246,36 @@ const Container = styled.div`
 const Header = styled.header`
   text-align: center;
 `
-const Logo = styled.header`
-  display: inline-block;
-  width: 150px;
-  @media screen and (max-width: 600px) {
-    width: 65px;
+const Logo = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  a { /* 确保 NavLink 不影响图片显示 */
+    display: inline-block;
+    text-decoration: none;
+  }
+  img {
+    width: 50px; /* 可根据需要调整大小 */
+    height: auto;
   }
 `
+
 const Nav = styled.ul`
-  padding-left: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  top: 0;
+  width: 100%;
+  height: 60px; /* 固定高度 */
+  background-color: white;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  list-style: none;
   @media screen and (max-width: 600px) {
-    padding-left: 20px;
+    padding: 0 10px;
   }
 `
+
 const Github = styled.div`
   text-align: center;
 `

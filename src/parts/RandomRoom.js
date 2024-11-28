@@ -16,12 +16,24 @@ function RandomRom (props) {
   )
 }
 
+
+const RoomContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* 居中排列 */
+  margin: 0 auto;
+  padding: 0 10px; /* 为左右两侧添加间隔 */
+  max-width: 1200px; /* 可根据需要设置最大宽度 */
+`
+
+
 const Random = styled.div`
   display: inline-block;
-  width: 33.3%;
+  width: 25%;
   box-sizing: border-box;
   padding: 10px;
   vertical-align: top;
+
   > a {
     display: block;
     width: 100%;
@@ -74,4 +86,6 @@ const H1 = styled.h1`
     font-size: 1rem;
   }
 `
+
+
 export default RandomRom;
